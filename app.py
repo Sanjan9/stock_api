@@ -6,7 +6,7 @@ import os
 
 app = Flask(__name__)
 
-# ✅ Load Model & Scaler
+#  Load Model & Scaler
 model_path = "stock_model.pkl"
 scaler_path = "scaler.pkl"
 
@@ -16,14 +16,14 @@ if not os.path.exists(model_path) or not os.path.exists(scaler_path):
 model = joblib.load(model_path)
 scaler = joblib.load(scaler_path)
 
-print("✅ Random Forest Model and Scaler Loaded Successfully!")
+print("Random Forest Model and Scaler Loaded Successfully!")
 
-# ✅ Serve index.html Directly (Without `templates/`)
+#  Serve index.html Directly (Without `templates/`)
 @app.route("/")
 def home():
     return send_file("index.html")
 
-# ✅ Predict API
+# Predict API
 @app.route("/predict", methods=["POST"])
 def predict():
     try:
@@ -33,7 +33,7 @@ def predict():
         if not stock_symbol:
             return jsonify({"error": "Stock symbol is required!"}), 400
 
-        # ✅ Fetch Latest Stock Data
+        # Fetch Latest Stock Data
         stock = yf.Ticker(stock_symbol)
         hist = stock.history(period="5d")
 
@@ -42,14 +42,14 @@ def predict():
 
         latest_data = hist.iloc[-1]
 
-        # ✅ Use Consistent Features
+        #  Use Consistent Features
         features = np.array([
             latest_data["Open"], latest_data["High"], latest_data["Low"],
             latest_data["Close"], latest_data["Volume"], latest_data["Close"] - latest_data["Open"],
             hist["Close"].rolling(10).mean().iloc[-1]
         ]).reshape(1, -1)
 
-        # ✅ Scale Features
+        # Scale Features
         features_scaled = scaler.transform(features)
         predicted_price = round(float(model.predict(features_scaled)[0]), 2)
 
