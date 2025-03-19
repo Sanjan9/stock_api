@@ -52,7 +52,7 @@ X_train_scaled = scaler.fit_transform(X_train)
 X_test_scaled = scaler.transform(X_test)
 
 # Train Model (Random Forest)
-model = RandomForestRegressor(n_estimators=100, random_state=42)
+model = RandomForestRegressor(n_estimators=50, random_state=42)
 model.fit(X_train_scaled, y_train)
 
 #  Save Model & Scaler
